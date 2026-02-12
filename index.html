@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Will you be my Valentine?</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255, 192, 203, 0.6), transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 105, 180, 0.7), transparent 50%),
+        radial-gradient(circle at 10% 80%, rgba(255, 182, 193, 0.6), transparent 50%),
+        radial-gradient(circle at 90% 90%, rgba(255, 20, 147, 0.5), transparent 50%),
+        linear-gradient(135deg, #ffb6c1, #ff69b4 30%, #ff1493 60%, #ffc0cb 100%);
+      color: #8b1538;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .floating-heart {
+      position: fixed;
+      font-size: 30px;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+      animation: float-random linear;
+    }
+
+    @keyframes float-random {
+      0% {
+        transform: translate(0, 0) rotate(0deg) scale(0.8);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translate(var(--end-x), var(--end-y)) rotate(var(--rotation)) scale(1.2);
+        opacity: 0.4;
+      }
+    }
+
+    .shake {
+      animation: page-shake 0.45s ease-in-out;
+    }
+
+    @keyframes page-shake {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(-8px); }
+      30% { transform: translateX(8px); }
+      45% { transform: translateX(-6px); }
+      60% { transform: translateX(6px); }
+      75% { transform: translateX(-3px); }
+      90% { transform: translateX(3px); }
+    }
+
+    .card {
+      background: 
+        linear-gradient(135deg, rgba(255, 192, 203, 0.95), rgba(255, 105, 180, 0.95)),
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 20px,
+          rgba(255, 182, 193, 0.1) 20px,
+          rgba(255, 182, 193, 0.1) 40px
+        );
+      padding: 32px 40px;
+      border-radius: 16px;
+      box-shadow: 0 20px 45px rgba(255, 105, 180, 0.5), 0 0 30px rgba(255, 192, 203, 0.4);
+      text-align: center;
+      position: relative;
+      min-width: 280px;
+      border: 2px solid rgba(255, 182, 193, 0.6);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .card::before {
+      content: "💖";
+      position: absolute;
+      font-size: 120px;
+      opacity: 0.15;
+      top: -20px;
+      left: -20px;
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+
+    .card::after {
+      content: "💕";
+      position: absolute;
+      font-size: 100px;
+      opacity: 0.15;
+      bottom: -15px;
+      right: -15px;
+      transform: rotate(15deg);
+      pointer-events: none;
+    }
+
+    .confetti-piece {
+      position: fixed;
+      font-size: 22px;
+      pointer-events: none;
+      z-index: 50;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+      animation: confetti-fall 2800ms ease-in forwards;
+      opacity: 0.95;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translate(0, 0) rotate(0deg) scale(0.8);
+        opacity: 0.95;
+      }
+      50% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translate(var(--dx), var(--dy)) rotate(var(--rotation)) scale(1);
+        opacity: 0.7;
+      }
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+      color: #8b1538;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: #8b1538;
+      font-size: 14px;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .subtitle {
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #a91d5a;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .meme-wrapper {
+      margin-bottom: 20px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 182, 193, 0.6);
+      background: rgba(255, 255, 255, 0.9);
+      width: 280px;
+      height: 280px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+      overflow: hidden;
+    }
+
+    .meme-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .meme-pop {
+      animation: meme-pop 260ms ease-out;
+    }
+
+    @keyframes meme-pop {
+      0% {
+        transform: scale(0.9);
+        opacity: 0.4;
+      }
+      60% {
+        transform: scale(1.04);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      position: relative;
+    }
+
+    button {
+      border: none;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    #yesBtn {
+      background: #fb7185;
+      color: white;
+      box-shadow: 0 4px 14px rgba(248, 113, 113, 0.6);
+    }
+
+    #yesBtn:hover {
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 6px 20px rgba(248, 113, 113, 0.75);
+    }
+
+    #noBtn {
+      background: #f97316;
+      color: white;
+    }
+
+    #noBtn:hover {
+      transform: translateY(-1px) scale(1.03);
+    }
+
+    .message {
+      margin-top: 16px;
+      font-weight: 600;
+      color: #8b1538;
+      min-height: 1.2em;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Will you be my Valentine?</h1>
+    <p>There is only one correct answer here.</p>
+    <div class="subtitle">Every time you click “No”, the universe sends a new meme to convince you.</div>
+
+    <div class="meme-wrapper">
+      <img id="memeImage" class="meme-image" src="c1.jpeg" alt="Meme" />
+    </div>
+
+    <div class="buttons">
+      <button id="yesBtn">Yes, of course</button>
+      <button id="noBtn">No</button>
+    </div>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const message = document.getElementById("message");
+    const card = document.querySelector(".card");
+    const memeImage = document.getElementById("memeImage");
+    const sadMemes = [
+      "c1.jpeg",
+      "c2.jpeg",
+      "c3.jpeg",
+      "c4.jpeg",
+      "c5.jpeg",
+      "c6.jpeg",
+      "c7.jpeg"
+    ];
+    const happyMemes = [
+      "h1.jpeg",
+      "h2.jpeg",
+      "h3.jpeg",
+      "h4.jpeg",
+      "h5.jpeg",
+      "h6.jpeg"
+    ];
+    let currentSadIndex = 0;
+    let hasEscaped = false;
+    let yesHasEscaped = false;
+    let yesMoveCount = 0;
+    const maxYesMoves = 5;
+
+    function moveNoButton() {
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
+
+      const maxX = window.innerWidth - btnWidth - 20;
+      const maxY = window.innerHeight - btnHeight - 20;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    function moveYesButton() {
+      if (yesMoveCount >= maxYesMoves) {
+        return; // Stop moving after 5 attempts
+      }
+      
+      yesMoveCount++;
+      const btnWidth = yesBtn.offsetWidth;
+      const btnHeight = yesBtn.offsetHeight;
+
+      const maxX = window.innerWidth - btnWidth - 20;
+      const maxY = window.innerHeight - btnHeight - 20;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      yesBtn.style.left = x + "px";
+      yesBtn.style.top = y + "px";
+    }
+
+    function animateMeme() {
+      memeImage.classList.remove("meme-pop");
+      // trigger reflow so animation can restart
+      void memeImage.offsetWidth;
+      memeImage.classList.add("meme-pop");
+    }
+
+    function showNextSadMeme() {
+      const index = Math.floor(Math.random() * sadMemes.length);
+      currentSadIndex = index;
+      memeImage.src = sadMemes[currentSadIndex];
+      animateMeme();
+    }
+
+    function shakePage() {
+      document.body.classList.remove("shake");
+      void document.body.offsetWidth;
+      document.body.classList.add("shake");
+    }
+
+    function showRandomHappyMeme() {
+      const index = Math.floor(Math.random() * happyMemes.length);
+      memeImage.src = happyMemes[index];
+      animateMeme();
+    }
+
+    function launchConfetti() {
+      const pieces = 300;
+      const emojis = ["💖", "💕", "💗", "💓", "💞", "💝", "💘", "❤️", "🧡", "💛", "💚", "💙", "💜", "🤍", "🖤", "🤎", "💔", "❣️", "💟", "❤️‍🔥", "❤️‍🩹", "🎉", "🎊"];
+      
+      // Generate 100 different starting positions around the perimeter
+      const generateEdgePositions = () => {
+        const positions = [];
+        const perimeter = 2 * (window.innerWidth + window.innerHeight);
+        const spacing = perimeter / 100;
+        
+        for (let i = 0; i < 100; i++) {
+          const distance = i * spacing;
+          let top, left;
+          
+          // Top edge
+          if (distance < window.innerWidth) {
+            top = 0;
+            left = (distance / window.innerWidth) * 100;
+          }
+          // Right edge
+          else if (distance < window.innerWidth + window.innerHeight) {
+            top = ((distance - window.innerWidth) / window.innerHeight) * 100;
+            left = 100;
+          }
+          // Bottom edge
+          else if (distance < 2 * window.innerWidth + window.innerHeight) {
+            top = 100;
+            left = 100 - ((distance - window.innerWidth - window.innerHeight) / window.innerWidth) * 100;
+          }
+          // Left edge
+          else {
+            top = 100 - ((distance - 2 * window.innerWidth - window.innerHeight) / window.innerHeight) * 100;
+            left = 0;
+          }
+          
+          positions.push({ top, left });
+        }
+        
+        return positions;
+      };
+      
+      const origins = generateEdgePositions();
+
+      for (let i = 0; i < pieces; i++) {
+        const span = document.createElement("span");
+        span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        span.className = "confetti-piece";
+
+        // Use one of the 100 positions (cycling through)
+        const origin = origins[i % origins.length];
+        span.style.top = `${origin.top}%`;
+        span.style.left = `${origin.left}%`;
+
+        // Calculate angle towards center with some randomness
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const originX = (origin.left / 100) * window.innerWidth;
+        const originY = (origin.top / 100) * window.innerHeight;
+        
+        const angleToCenter = Math.atan2(centerY - originY, centerX - originX);
+        const jitter = (Math.random() - 0.5) * 1.5;
+        const angle = angleToCenter + jitter;
+        
+        // Horizontal movement
+        const horizontalDist = 150 + Math.random() * 250;
+        const dx = Math.cos(angle) * horizontalDist;
+        
+        // Vertical movement with gravity (always falls down)
+        const verticalDist = 250 + Math.random() * 350;
+        const dy = Math.abs(Math.sin(angle)) * verticalDist + (Math.random() * 200);
+        
+        // Rotation for falling effect
+        const rotation = (Math.random() - 0.5) * 720; // -360 to +360 degrees
+
+        span.style.setProperty("--dx", `${dx}px`);
+        span.style.setProperty("--dy", `${dy}px`);
+        span.style.setProperty("--rotation", `${rotation}deg`);
+
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 2900);
+      }
+    }
+
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!hasEscaped) {
+        hasEscaped = true;
+        noBtn.style.position = "fixed";
+      }
+      moveNoButton();
+      showNextSadMeme();
+      shakePage();
+    });
+
+    yesBtn.addEventListener("mouseover", () => {
+      if (yesMoveCount >= maxYesMoves) {
+        return; // Stop moving after 5 attempts
+      }
+      if (!yesHasEscaped) {
+        yesHasEscaped = true;
+        yesBtn.style.position = "fixed";
+      }
+      moveYesButton();
+    });
+
+    yesBtn.addEventListener("mousemove", () => {
+      if (yesMoveCount >= maxYesMoves) {
+        return; // Stop moving after 5 attempts
+      }
+      moveYesButton();
+    });
+
+    yesBtn.addEventListener("click", (e) => {
+      if (yesMoveCount < maxYesMoves) {
+        e.preventDefault();
+        moveYesButton();
+      } else {
+        // After 5 moves, allow the click to work
+        message.textContent = "Yay! You're officially my Valentine.";
+        showRandomHappyMeme();
+        launchConfetti();
+      }
+      message.textContent = "Yay! You’re officially my Valentine.";
+    });
+
+    // Create floating hearts in background
+    function createFloatingHeart(startY) {
+      const hearts = ["💖", "💕", "💗", "💓", "💞", "💝", "❤️"];
+      const heart = document.createElement("div");
+      heart.className = "floating-heart";
+      heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      
+      const startX = Math.random() * window.innerWidth;
+      heart.style.left = startX + "px";
+      heart.style.bottom = (startY !== undefined ? startY : -50) + "px";
+      
+      const endX = (Math.random() - 0.5) * window.innerWidth * 1.5;
+      const endY = -(window.innerHeight + 100);
+      const rotation = (Math.random() - 0.5) * 360;
+      const duration = 5 + Math.random() * 4;
+      
+      heart.style.setProperty("--end-x", `${endX}px`);
+      heart.style.setProperty("--end-y", `${endY}px`);
+      heart.style.setProperty("--rotation", `${rotation}deg`);
+      heart.style.animationDuration = `${duration}s`;
+      heart.style.fontSize = (22 + Math.random() * 28) + "px";
+      
+      document.body.appendChild(heart);
+      
+      setTimeout(() => {
+        if (heart.parentNode) heart.remove();
+      }, duration * 1000);
+    }
+
+    function startFloatingHearts() {
+      // Instant: create 15 hearts across viewport immediately
+      for (let i = 0; i < 15; i++) {
+        const startY = Math.random() * (window.innerHeight + 100) - 50;
+        createFloatingHeart(startY);
+      }
+      
+      setInterval(() => {
+        createFloatingHeart();
+      }, 600);
+    }
+
+    startFloatingHearts();
+  </script>
+</body>
+</html>
