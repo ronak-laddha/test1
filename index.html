@@ -559,6 +559,9 @@
     yesBtn.addEventListener("mouseover", handleYesApproach);
     yesBtn.addEventListener("mousemove", handleYesApproach);
     yesBtn.addEventListener("touchstart", (e) => {
+      if (yesMoveCount >= maxYesMoves) {
+        return; // Allow touch to become click - don't preventDefault
+      }
       e.preventDefault();
       handleYesApproach();
     }, { passive: false });
