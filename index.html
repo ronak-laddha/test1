@@ -371,37 +371,55 @@
     let yesMoveCount = 0;
     const maxYesMoves = 5;
 
+    function getSafeRandomPosition(btnWidth, btnHeight) {
+      const padding = 12;
+      const cardRect = card.getBoundingClientRect();
+      const gap = 10;
+
+      const zones = [];
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      if (cardRect.top > padding + btnHeight + gap) {
+        zones.push({ name: "top", minX: padding, maxX: w - btnWidth - padding, minY: padding, maxY: cardRect.top - btnHeight - gap });
+      }
+      if (cardRect.bottom + gap < h - padding - btnHeight) {
+        zones.push({ name: "bottom", minX: padding, maxX: w - btnWidth - padding, minY: cardRect.bottom + gap, maxY: h - btnHeight - padding });
+      }
+      if (cardRect.left > padding + btnWidth + gap) {
+        zones.push({ name: "left", minX: padding, maxX: cardRect.left - btnWidth - gap, minY: padding, maxY: h - btnHeight - padding });
+      }
+      if (cardRect.right + gap < w - padding - btnWidth) {
+        zones.push({ name: "right", minX: cardRect.right + gap, maxX: w - btnWidth - padding, minY: padding, maxY: h - btnHeight - padding });
+      }
+
+      if (zones.length === 0) {
+        return { x: padding, y: padding };
+      }
+      const zone = zones[Math.floor(Math.random() * zones.length)];
+      const x = zone.minX + Math.random() * Math.max(0, zone.maxX - zone.minX);
+      const y = zone.minY + Math.random() * Math.max(0, zone.maxY - zone.minY);
+      return { x, y };
+    }
+
     function moveNoButton() {
       const btnWidth = noBtn.offsetWidth;
       const btnHeight = noBtn.offsetHeight;
-
-      const maxX = window.innerWidth - btnWidth - 20;
-      const maxY = window.innerHeight - btnHeight - 20;
-
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+      const pos = getSafeRandomPosition(btnWidth, btnHeight);
+      noBtn.style.left = pos.x + "px";
+      noBtn.style.top = pos.y + "px";
     }
 
     function moveYesButton() {
       if (yesMoveCount >= maxYesMoves) {
-        return; // Stop moving after 5 attempts
+        return;
       }
-      
       yesMoveCount++;
       const btnWidth = yesBtn.offsetWidth;
       const btnHeight = yesBtn.offsetHeight;
-
-      const maxX = window.innerWidth - btnWidth - 20;
-      const maxY = window.innerHeight - btnHeight - 20;
-
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-
-      yesBtn.style.left = x + "px";
-      yesBtn.style.top = y + "px";
+      const pos = getSafeRandomPosition(btnWidth, btnHeight);
+      yesBtn.style.left = pos.x + "px";
+      yesBtn.style.top = pos.y + "px";
     }
 
     function animateMeme() {
@@ -519,6 +537,7 @@
       if (!hasEscaped) {
         hasEscaped = true;
         noBtn.style.position = "fixed";
+        noBtn.style.zIndex = "10";
       }
       moveNoButton();
       showNextSadMeme();
@@ -532,6 +551,7 @@
       if (!yesHasEscaped) {
         yesHasEscaped = true;
         yesBtn.style.position = "fixed";
+        yesBtn.style.zIndex = "10";
       }
       moveYesButton();
     }
